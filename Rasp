@@ -1,0 +1,81 @@
+###The following is based off of standard RaspberryPy image sensing, but it replacing door detection with general potential opening detection.
+
+import rospy
+import sys
+import rospy
+import cv2
+from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
+
+class Image_Develop:
+    def __init__(self):
+       self.image_pub = rospy.Publisher("Testing3",Image)
+       self.x=0
+       cv2.namedWindow("Input", 1)
+       self.bridge = CvBridge()
+       self.image_sub = rospy.Subscriber("/ExampleGauge/image_raw",Image,self.callback)
+       self.safety=False  
+       self.ready=False
+
+       # Raw Image Subscriber
+       self.image_sub = rospy.Subscriber(self.image_source,Image,self.image_callback)
+
+###For Our Callback here, we will be using a clusetering algorithm to approximate the datapoints. K-Means(with color quantified by pixel value) can be used.
+###K-Means of color as pixel value can be quantified and added later
+    def callback(self,cluster.data):
+
+	
+#    if self.x>32: 
+    if self.ready:	
+	    cv_image = self.bridge.imgmsg_to_cv2(cluster.data, "mfg_center")
+	    cv2.imshow("Input", cv_image)
+	    cv2.waitKey(3)
+
+	    try:
+
+	          test = wd.CheckScene("Scn21.xml")
+	          img = cv2.resize(cv_image,(600,300))
+	          
+	          p_label,p_acc,p_val = test.detectDoor(cv_image,0,0)
+	          if p_acc[0] > 0:
+	          	print "opening found", p_acc[0]
+	          	self.safety=False
+	          else:
+	          	print "No opening"
+	          	self.safety=True
+	          	print self.safety
+	          self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "mfg_center"))
+	          self.ready=False
+	    except CvBridgeError, e:
+	          print e
+
+	    self.x=0
+    else:
+	    self.x=self.x+1
+
+def SetScene(self, data): 
+  if self.scene_color = getAnalysis(data_range)
+      return data
+      
+def getAnalysis(self, data):
+    for i in range(1:data.max)
+        color(i) = (color(i)-color(i-1))/2 
+    end
+end
+
+
+
+  def Safe(self):
+    print "Safety" + str(self.safety)
+    return self.safety
+
+'''
+def main():
+  ic = image_converter()
+  rospy.init_node('image_converter', anonymous=True)
+  try:
+    rospy.spin()
+  except KeyboardInterrupt:
+    print "Shutting down"
+  cv2.destroyAllWindows()
